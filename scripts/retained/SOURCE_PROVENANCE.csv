@@ -1,0 +1,4 @@
+public_file,sha256,role,retained_status
+train_ak_direct_fullatom.py,b6565927795d1a18006367e676fa60a6f193019a9d8137302db1082483e7a6f3,AK full-atom direct image-to-coordinate training and inference,retained controlled result
+train_her2_synthetic_direct.py,91d363a51bbe7b917df57f58763fa3935bdc38cf5b31b9505fd874ee09937c1b,Synthetic HER2 C-alpha direct image-to-coordinate training and inference,retained controlled result
+train_her2_experimental_direct.py,1970d59dd8cb5c6efc9a35c2ce9fe089a77497d42b69520f8ea6c4e5390a79a5,Experimental HER2 direct training and inference against MDSPACE-derived surrogate targets,retained baseline used PCA score weight zero

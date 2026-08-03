@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+build/
+dist/
+
+# Large research artifacts must not be committed.
+*.pt
+*.pth
+*.ckpt
+*.npy
+*.npz
+*.mrc
+*.mrcs
+*.stk
+*.dcd
+*.xtc
+*.spi
+*.zip
+outputs/
+runs/
+data/
+
+# Local configuration and credentials.
+.env
+.env.*
+!.env.example
+*token*
+*secret*

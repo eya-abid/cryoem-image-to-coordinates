@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cryoem-image-to-coordinates"
+version = "1.0.0"
+description = "Reproducible image-to-coordinate learning and geometry-aware evaluation for cryo-EM structural variation studies"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+  {name = "Eya ABID"},
+]
+keywords = ["cryo-EM", "structural biology", "coordinate regression", "HER2", "MDSPACE"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+  "numpy>=1.24",
+  "scikit-learn>=1.3",
+]
+
+[project.optional-dependencies]
+training = [
+  "torch>=2.1",
+  "matplotlib>=3.7",
+  "pillow>=10",
+  "pandas>=2.0",
+  "biopython>=1.81",
+]
+dev = [
+  "pytest>=8",
+  "ruff>=0.5",
+]
+
+[project.scripts]
+cryoem-coords = "cryoem_image_to_coordinates.cli:main"
+
+[project.urls]
+Archive = "https://doi.org/10.5281/zenodo.21216716"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"

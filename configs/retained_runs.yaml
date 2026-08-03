@@ -1,0 +1,73 @@
+package_version: "1.0.0"
+date: "2026-07-06"
+doi: "10.5281/zenodo.21216716"
+
+global_rules:
+  no_absolute_paths_in_public_package: true
+  use_placeholder_roots:
+    - PROJECT_ROOT
+    - DATA_ROOT
+    - OUTPUT_ROOT
+  random_seed_default: 42
+  experimental_her2_target_status: "MDSPACE-derived C-alpha surrogate coordinates; not direct experimental ground truth"
+  pca_status: "diagnostic visualization and spread analysis, not primary accuracy evidence"
+
+systems:
+  ak_synthetic:
+    target_status: "known synthetic coordinate targets"
+    role: "controlled reference system"
+    public_data_status: "not included in this DOI package"
+    required_artifacts:
+      - DATA_AK_SYNTHETIC_IMAGES
+      - DATA_AK_COORDINATE_TARGETS
+
+  her2_synthetic:
+    target_status: "known synthetic C-alpha coordinate targets"
+    role: "controlled HER2 reference system"
+    retained_coordinate_representation:
+      n_ca_positions: 1489
+      output_shape: [1489, 3]
+      source_structure: "6OGE-derived retained representation"
+      composition: "HER2 extracellular domain plus pertuzumab and trastuzumab Fab fragments; excludes Fc regions, membrane, transmembrane domain, and intracellular domain"
+    public_data_status: "not included in this DOI package"
+    required_artifacts:
+      - DATA_HER2_SYNTHETIC_IMAGES
+      - DATA_HER2_SYNTHETIC_TARGETS
+
+  her2_experimental:
+    target_status: "MDSPACE-derived C-alpha surrogate coordinate targets"
+    role: "main experimental challenge"
+    coordinate_representation:
+      n_ca_positions: 1489
+      output_shape: [1489, 3]
+    retained_raw_direct_512d_baseline:
+      branch: "raw-particle direct residual image encoder plus coordinate MLP"
+      image_input_shape: [1, 128, 128]
+      preprocessing: "128 x 128 z-score-normalized particle images from the retained experimental HER2 array"
+      additional_direct_branch_normalization: "none beyond saved input preprocessing"
+      bottleneck_dim: 512
+      coordinate_head_layers: 4
+      hidden_dim: 2048
+      dropout: 0.15
+      loss: "Huber coordinate loss"
+      huber_beta: 5.0
+      optimizer: "AdamW"
+      learning_rate: 0.00001
+      min_learning_rate: 0.000001
+      weight_decay: 0.0001
+      batch_size: 8
+      gradient_clip_norm: 1.0
+      early_stopping_patience: 8
+      split_counts:
+        train: 79923
+        validation: 10202
+        test: 9875
+      protected_baseline_metrics:
+        mean_rmsd: 4.3088
+        median_rmsd: 4.0485
+        p95_rmsd: 7.4241
+        target_pc3_spread_ratio: 0.4818
+        paired_pc10_mean: 2.9088
+        median_paired_target_rank: 3826
+        top10_rate_percent: 0.273
+        top100_rate_percent: 2.329

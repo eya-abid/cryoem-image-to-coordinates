@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software or its public result tables, please cite the archived reproducibility package."
+title: "Cryo-EM image-to-coordinate learning and geometry-aware evaluation"
+type: software
+authors:
+  - given-names: "Eya"
+    family-names: "ABID"
+    affiliation: "Sorbonne Universite, IMPMC"
+version: "1.0.0"
+date-released: "2026-08-03"
+doi: "10.5281/zenodo.21216716"
+repository-code: "https://github.com/eya-abid/cryoem-image-to-coordinates"
+url: "https://github.com/eya-abid/cryoem-image-to-coordinates"
+license: "MIT"
+keywords:
+  - cryo-EM
+  - HER2
+  - coordinate regression
+  - MDSPACE
+  - surrogate coordinate targets
