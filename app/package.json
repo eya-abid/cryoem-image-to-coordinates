@@ -1,7 +1,7 @@
 {
   "name": "her2-structure-motion-app",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "dependencies": {
     "lucide": "^0.468.0",
     "three": "^0.170.0"
