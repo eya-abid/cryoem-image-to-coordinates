@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f7f8" />
+    <title>Conformational Coordinate Lab</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/vendor/lucide.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/static/vendor/three.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-block">
+        <div class="brand-mark">Cα</div>
+        <div>
+          <h1>Conformational Coordinate Lab</h1>
+          <p>Image-conditioned structural prediction</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <div id="system-selector" class="system-selector" aria-label="Prediction system">
+          <button type="button" data-system="ak">AK</button>
+          <button type="button" data-system="her2_synthetic">Synthetic HER2</button>
+          <button class="is-active" type="button" data-system="her2_experimental">Experimental HER2</button>
+        </div>
+        <span id="service-status" class="service-status"><span class="status-dot"></span>Connecting</span>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="input-panel">
+        <section class="panel-section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Particle input</p>
+              <h2>Image</h2>
+            </div>
+            <button id="reset-button" class="icon-button" type="button" title="Reset input" aria-label="Reset input">
+              <i data-lucide="rotate-ccw"></i>
+            </button>
+          </div>
+
+          <div id="method-selector" class="segmented-control method-selector" aria-label="Prediction method">
+            <button class="is-active" type="button" data-method="direct">Direct CNN</button>
+            <button type="button" data-method="staged">Staged CAE</button>
+          </div>
+
+          <input id="file-input" type="file" accept=".spi,.png,.tif,.tiff,.jpg,.jpeg,.npy" hidden />
+          <label id="drop-zone" class="drop-zone" for="file-input" role="button" tabindex="0">
+            <span class="drop-icon"><i data-lucide="image-up"></i></span>
+            <span class="drop-title">Choose particle image</span>
+            <span class="drop-formats">SPI, PNG, TIFF, JPEG, or NPY</span>
+          </label>
+
+          <div id="input-preview-wrap" class="input-preview-wrap is-hidden">
+            <img id="input-preview" alt="Selected particle image" />
+            <div class="input-preview-meta">
+              <strong id="input-name"></strong>
+              <span id="input-shape"></span>
+            </div>
+          </div>
+
+          <button id="predict-button" class="primary-button" type="button" disabled>
+            <i data-lucide="scan-search"></i>
+            <span>Predict coordinates</span>
+          </button>
+        </section>
+
+        <section class="panel-section examples-section">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Verified controls</p>
+              <h2>Held-out particles</h2>
+            </div>
+          </div>
+          <div id="examples-grid" class="examples-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="model-facts">
+          <div><span>Input</span><strong>128 × 128</strong></div>
+          <div><span>Encoder</span><strong id="fact-encoder">Residual CNN</strong></div>
+          <div><span>Output</span><strong id="fact-output">1,489 × 3</strong></div>
+          <div><span>Branch</span><strong id="fact-branch">Direct 512D</strong></div>
+        </section>
+      </aside>
+
+      <section id="viewer-panel" class="viewer-panel">
+        <div id="viewer" class="viewer" aria-label="Predicted coordinate structure"></div>
+        <div id="empty-state" class="empty-state">
+          <div class="empty-structure">
+            <i data-lucide="orbit"></i>
+          </div>
+          <p class="eyebrow">Structure viewport</p>
+          <h2>Select an image or held-out particle</h2>
+          <p id="empty-description">The selected retained model will return its native coordinate representation.</p>
+        </div>
+        <div id="loading-state" class="loading-state is-hidden">
+          <span class="loader"></span>
+          <strong>Running image-to-coordinate inference</strong>
+        </div>
+
+        <div id="viewer-toolbar" class="viewer-toolbar is-disabled">
+          <div class="segmented-control" aria-label="Structure display">
+            <button class="view-mode is-active" data-mode="motion" type="button">Motion</button>
+            <button class="view-mode" data-mode="prediction" type="button">Prediction</button>
+            <button class="view-mode" data-mode="mean" type="button">Mean</button>
+          </div>
+          <div class="toolbar-actions">
+            <button id="target-toggle" class="icon-button is-hidden" type="button" title="Toggle paired target" aria-label="Toggle paired target">
+              <i data-lucide="git-compare-arrows"></i>
+            </button>
+            <button id="fit-button" class="icon-button" type="button" title="Fit structure" aria-label="Fit structure">
+              <i data-lucide="focus"></i>
+            </button>
+            <button id="fullscreen-button" class="icon-button" type="button" title="Full screen" aria-label="Full screen">
+              <i data-lucide="maximize-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="motion-controls" class="motion-controls is-disabled">
+          <button id="play-button" class="play-button" type="button" aria-label="Play interpolation">
+            <i data-lucide="play"></i>
+          </button>
+          <span class="motion-label">Training mean</span>
+          <input id="motion-slider" type="range" min="0" max="100" value="0" aria-label="Interpolation position" />
+          <span class="motion-label">Prediction</span>
+          <span id="motion-value" class="motion-value">0%</span>
+        </div>
+
+        <div class="viewer-legend">
+          <div class="legend-title-row">
+            <span id="legend-title">Chains</span>
+            <button id="color-mode" class="text-button" type="button">Color by displacement</button>
+          </div>
+          <div id="chain-legend" class="chain-legend"></div>
+          <div id="displacement-legend" class="displacement-legend is-hidden">
+            <span>Low</span><div class="color-ramp"></div><span>High</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="result-panel">
+        <div class="result-tabs" role="tablist">
+          <button class="result-tab is-active" data-tab="result" type="button">Result</button>
+          <button class="result-tab" data-tab="evidence" type="button">Evidence</button>
+          <button class="result-tab" data-tab="method" type="button">Method</button>
+        </div>
+
+        <div id="tab-result" class="tab-content is-active">
+          <section class="result-title-section">
+            <p class="eyebrow">Current output</p>
+            <h2 id="result-title">No prediction</h2>
+            <p id="result-subtitle">Load a particle to populate structural diagnostics.</p>
+          </section>
+
+          <section id="metric-list" class="metric-list">
+            <div class="metric-row"><span>Paired RMSD</span><strong>—</strong></div>
+            <div class="metric-row"><span>Mean displacement</span><strong>—</strong></div>
+            <div class="metric-row"><span>Radius of gyration</span><strong>—</strong></div>
+          </section>
+
+          <div id="comparison-callout" class="comparison-callout is-hidden"></div>
+
+          <section class="preprocess-section">
+            <h3>Input processing</h3>
+            <dl id="preprocess-details">
+              <div><dt>Crop</dt><dd>128 × 128</dd></div>
+              <div><dt>Clip</dt><dd>p1–p99</dd></div>
+              <div><dt>Scale</dt><dd>per-image z-score</dd></div>
+            </dl>
+          </section>
+
+          <button id="download-button" class="secondary-button" type="button" disabled>
+            <i data-lucide="download"></i>
+            <span>Download predicted PDB</span>
+          </button>
+        </div>
+
+        <div id="tab-evidence" class="tab-content">
+          <section class="evidence-section">
+            <p class="eyebrow">Held-out population</p>
+            <h2>What the retained model establishes</h2>
+            <div id="evidence-stats"></div>
+            <p id="evidence-conclusion" class="evidence-conclusion"></p>
+          </section>
+          <section class="boundary-note">
+            <i data-lucide="triangle-alert"></i>
+            <p id="system-caveat"></p>
+          </section>
+        </div>
+
+        <div id="tab-method" class="tab-content">
+          <section class="method-flow">
+            <p class="eyebrow">Retained branch</p>
+            <h2 id="method-title">Direct image-to-coordinate prediction</h2>
+            <ol>
+              <li><span>1</span><div><strong>Particle image</strong><small id="method-normalization">System-specific image normalization</small></div></li>
+              <li><span>2</span><div><strong id="method-stage-two-title">Residual encoder</strong><small id="method-stage-two-detail">512-dimensional image representation</small></div></li>
+              <li><span>3</span><div><strong id="method-stage-three-title">Coordinate head</strong><small id="method-stage-three-detail">Four-layer MLP</small></div></li>
+              <li><span>4</span><div><strong id="method-output-title">Coordinates</strong><small id="method-output">Native ordered coordinate representation</small></div></li>
+            </ol>
+          </section>
+          <section class="motion-note">
+            <strong>Motion display</strong>
+            <p>The viewer interpolates between the training-target mean and prediction. It is a displacement visualization, not a dynamical simulation.</p>
+          </section>
+        </div>
+      </aside>
+    </main>
+
+    <section class="systems-strip" aria-label="Thesis systems summary">
+      <div class="systems-heading">
+        <p class="eyebrow">Thesis progression</p>
+        <h2>Three regimes, one prediction form</h2>
+      </div>
+      <article data-summary-system="ak">
+        <span class="system-index ak">01</span>
+        <div><h3>AK controlled benchmark</h3><p>Known full-atom synthetic targets establish feasibility.</p></div>
+      </article>
+      <article data-summary-system="her2_synthetic">
+        <span class="system-index synth">02</span>
+        <div><h3>Synthetic HER2</h3><p>Known 1,489-position targets test scaling and capacity.</p></div>
+      </article>
+      <article data-summary-system="her2_experimental">
+        <span class="system-index exp">03</span>
+        <div><h3>Experimental HER2</h3><p>MDSPACE-derived surrogate targets test image-conditioned agreement.</p></div>
+      </article>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/static/app.js"></script>
+  </body>
+</html>

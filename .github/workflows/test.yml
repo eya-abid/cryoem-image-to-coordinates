@@ -14,8 +14,14 @@ jobs:
           python-version: "3.11"
           cache: pip
       - name: Install
-        run: python -m pip install -e ".[dev]"
+        run: |
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e ".[dev]" pillow
       - name: Lint
-        run: ruff check src tests
+        run: ruff check src tests app/tests scripts/verify_public_repo.py
       - name: Test
         run: pytest
+      - name: App syntax and public-repository audit
+        run: |
+          python -m py_compile app/server.py app/inference.py app/model.py app/staged_model.py app/desktop_app.py
+          python scripts/verify_public_repo.py

@@ -4,12 +4,12 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 5 * 1024 * 1024
-IGNORED_PARTS = {".git", ".venv", "__pycache__", ".pytest_cache", ".ruff_cache"}
 TEXT_SUFFIXES = {".cff", ".csv", ".json", ".md", ".py", ".sh", ".toml", ".txt", ".yaml", ".yml"}
 PROHIBITED = {
     "workstation path": re.compile(r"/(?:run/media/guest|home/guest)/"),
@@ -22,8 +22,17 @@ PROHIBITED = {
 def main() -> None:
     failures: list[str] = []
     checked = 0
-    for path in ROOT.rglob("*"):
-        if not path.is_file() or any(part in IGNORED_PARTS for part in path.parts):
+    candidates = subprocess.run(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    ).stdout.split(b"\0")
+    for relative_bytes in candidates:
+        if not relative_bytes:
+            continue
+        path = ROOT / relative_bytes.decode("utf-8")
+        if not path.is_file():
             continue
         checked += 1
         size = path.stat().st_size

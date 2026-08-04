@@ -7,6 +7,7 @@
 - sanitized retained-run configuration;
 - aggregate public metric tables;
 - command templates, tests, and documentation.
+- application topology metadata and training-target means used for visualization.
 
 ## Not included
 
@@ -37,4 +38,5 @@ These artifacts are too large, controlled, or redistribution-dependent for Git. 
 5. Confirm target atom count and ordering against the reference PDB.
 6. Save a manifest and cryptographic checksums outside the run directory.
 
-The archived public companion is available at [DOI 10.5281/zenodo.21216716](https://doi.org/10.5281/zenodo.21216716).
+No archival DOI is currently registered. The GitHub repository is the public source of
+record until a versioned archive is deposited and its identifier verified.

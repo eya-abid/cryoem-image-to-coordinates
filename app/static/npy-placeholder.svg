@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#eef3f4"/>
+  <rect x="14" y="11" width="36" height="42" rx="3" fill="#fff" stroke="#9cadb6"/>
+  <path d="M40 11v11h10" fill="#dce8ed" stroke="#9cadb6"/>
+  <text x="32" y="39" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#1769aa">NPY</text>
+</svg>

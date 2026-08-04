@@ -1,0 +1,12 @@
+{
+  "name": "her2-structure-motion-app",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "lucide": "^0.468.0",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.49.1"
+  }
+}

@@ -28,6 +28,13 @@ pytest
 
 The lightweight evaluation API requires NumPy and scikit-learn. Model training additionally requires PyTorch, Matplotlib, Pillow, pandas, and Biopython.
 
+## Interactive Application
+
+The repository also contains the **Conformational Coordinate Lab**, a local desktop
+and browser research demonstrator for the retained direct and staged models. See the
+[application guide](app/README.md) and [checkpoint manifest](app/CHECKPOINTS.md).
+Model weights are not yet distributed through this repository.
+
 ## Quick Evaluation
 
 Evaluate paired coordinate arrays stored as `(samples, atoms, 3)` or flattened `(samples, atoms*3)` NumPy files:
@@ -74,13 +81,14 @@ examples/                         portable command templates
 configs/                          sanitized retained-run configuration
 results/                          public aggregate metric tables
 docs/                             scientific scope and reproducibility guidance
+app/                              local desktop/browser research demonstrator
 tests/                            unit tests
 ```
 
 ## Data Availability
 
-Raw particles, coordinate arrays, checkpoints, and controlled third-party data are not committed. Stable artifact requirements and data boundaries are described in [Data availability](docs/data_availability.md). The public reproducibility record is archived at [Zenodo DOI 10.5281/zenodo.21216716](https://doi.org/10.5281/zenodo.21216716).
+Raw particles, test coordinate arrays, checkpoints, and controlled third-party data are not committed. Stable artifact requirements and data boundaries are described in [Data availability](docs/data_availability.md). A public archival DOI has not yet been registered.
 
 ## Citation and License
 
-Citation metadata are provided in `CITATION.cff`. Code is released under the MIT License. Public result tables retain their scientific provenance through the cited Zenodo record.
+Citation metadata are provided in `CITATION.cff`. Code is released under the MIT License. Public result tables retain their provenance in the repository documentation and checksums.

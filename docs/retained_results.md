@@ -32,4 +32,5 @@ The held-out training-target mean baseline has mean RMSD 4.8764 A (bootstrap 95%
 - `results/raw100k_capacity_and_finetune_summary.csv`
 - `results/experimental_baseline_reanalysis.csv`
 
-The tables contain aggregate metrics only. See the Zenodo record for archival checksums and package metadata.
+The tables contain aggregate metrics only. Repository checksums and source-provenance
+records identify the published files; no archival DOI is currently registered.

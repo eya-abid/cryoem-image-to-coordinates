@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cryoem-image-to-coordinates"
-version = "1.0.0"
+version = "1.1.0"
 description = "Reproducible image-to-coordinate learning and geometry-aware evaluation for cryo-EM structural variation studies"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -33,6 +33,12 @@ training = [
   "pandas>=2.0",
   "biopython>=1.81",
 ]
+app = [
+  "torch>=2.1",
+  "matplotlib>=3.7",
+  "pillow>=10",
+  "PyQt5>=5.15",
+]
 dev = [
   "pytest>=8",
   "ruff>=0.5",
@@ -42,14 +48,14 @@ dev = [
 cryoem-coords = "cryoem_image_to_coordinates.cli:main"
 
 [project.urls]
-Archive = "https://doi.org/10.5281/zenodo.21216716"
+Repository = "https://github.com/eya-abid/cryoem-image-to-coordinates"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 addopts = "-ra"
-testpaths = ["tests"]
+testpaths = ["tests", "app/tests"]
 
 [tool.ruff]
 line-length = 120

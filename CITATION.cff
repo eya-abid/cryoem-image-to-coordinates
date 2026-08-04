@@ -1,14 +1,13 @@
 cff-version: 1.2.0
-message: "If you use this software or its public result tables, please cite the archived reproducibility package."
+message: "If you use this software or its public result tables, please cite this repository."
 title: "Cryo-EM image-to-coordinate learning and geometry-aware evaluation"
 type: software
 authors:
   - given-names: "Eya"
     family-names: "ABID"
     affiliation: "Sorbonne Universite, IMPMC"
-version: "1.0.0"
-date-released: "2026-08-03"
-doi: "10.5281/zenodo.21216716"
+version: "1.1.0"
+date-released: "2026-08-04"
 repository-code: "https://github.com/eya-abid/cryoem-image-to-coordinates"
 url: "https://github.com/eya-abid/cryoem-image-to-coordinates"
 license: "MIT"

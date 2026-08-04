@@ -25,6 +25,15 @@ outputs/
 runs/
 data/
 
+# The app intentionally publishes small training-mean visualization arrays.
+!app/assets/*/training_target_mean.npy
+!app/assets/her2_experimental/staged_training_target_mean.npy
+app/checkpoints/**/*.pt
+app/assets/*/held_out_examples.npz
+app/assets/*/fresh_scipion_examples.npz
+app/node_modules/
+app/static/vendor/
+
 # Local configuration and credentials.
 .env
 .env.*

@@ -1,6 +1,6 @@
-package_version: "1.0.0"
+package_version: "1.1.0"
 date: "2026-07-06"
-doi: "10.5281/zenodo.21216716"
+archive_doi: null
 
 global_rules:
   no_absolute_paths_in_public_package: true
